@@ -1,0 +1,61 @@
+/*
+@title Personal Jesus [first session in strudel]
+@by Depeche Mode, Johnny Cash, Kroloburet
+@details
+  Hi everyone! This is my very first short session in Strudel.
+  So, let's coding some music! Forgive me, Johnny Cash 😅
+*/
+
+samples({
+    vocal: 'strudel/PersonalJesus/samples/johnny_vocal.wav',
+    vocal1: 'strudel/PersonalJesus/samples/johnny_vocal_1.wav',
+}, 'https://raw.githubusercontent.com/kroloburet/music/master/')
+
+const JohnnyCash = s("<vocal@16 ~@6 vocal1:2@2>").speed(.8)
+    .room(.4).distort(.4).delay("<0@16 .4:.25:.9@8>")
+    ._scope()
+
+const sawBg = n("<0@4 2@4 4@4>".sub(4))
+    .s("square").scale("C2:minor").lpf(200)
+    ._scope()
+
+const sawRithm = n("<0@4 2@4 4@4>".sub(4))
+    .s("supersaw").scale("C2:minor").beat("2, 6, 10", 16)
+    .rel(.25).lpf(saw.range(200, 2000)).room(1).roomsize(1).delay(.6)
+    ._scope()
+
+const pan = n("<4 2>".sub(slow(12, "4 2")))
+    .s("z_triangle").scale("C4:minor").beat("2", 16)
+    .rel(2).att(.5).room(1).lpf(saw.range(200, 4000))
+    ._scope()
+
+const strings = n("<0 2 4 -1 2 3>*8".sub(4))
+    .s("gm_cello").scale("C4:minor")
+    .delay(.6).room(1)
+    ._scope()
+
+const drumRithm = s("bd:2").bank("mc303").beat("0, 6, 10", 16)
+const hhRithm = s("hh!16").bank("tr808").sometimesBy(.08, x=> x.ply(2))
+const sdRithm = s("sd").bank("9000")
+    .beat("1 3", 4).delay(rand.range(0, .8)).room(.8)
+    .sometimesBy(.35, x => x.ply(2))
+
+
+///////////////////////////////
+// Controls
+///////////////////////////////
+
+$: stack(
+    sawBg.gain(slider(1)),
+    sawRithm.gain(slider(1)),
+    pan.gain(slider(0.6, 0, .6)),
+    // strings.dec(slider(0.4, .15, .4)).gain(slider(0.5, 0, .5)),
+
+    // Beat
+    // drumRithm.gain(slider(0.55)),
+    // hhRithm.gain(slider(.3, 0, 1)),
+    // sdRithm.gain(slider(.3, 0, 1)),
+
+    // Vocal
+    JohnnyCash.gain(slider(0.3)),
+)
