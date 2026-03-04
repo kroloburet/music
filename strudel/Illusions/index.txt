@@ -1,0 +1,83 @@
+/*
+@title Illusions
+@by Kroloburet
+@details
+    Your illusions are the path to suffering.
+    Thanks for the incredible samples:
+        https://freesound.org/people/Moqally [gmin.wav]
+        https://freesound.org/people/quatricise [drone-cm7.wav]
+        https://freesound.org/people/pZay [pulse-of-parsec.wav]
+*/
+
+samples({
+    drone: 'drone-cm7.wav',
+    gmin: 'gmin.wav',
+    pulse: 'pulse-of-parsec.wav',
+}, 'https://raw.githubusercontent.com/kroloburet/music/master/strudel/Illusions/samples/')
+
+const drone = s("drone").scrub("<0>/16")
+const gmin = s("gmin").scrub("<.68 .1>").hpf(400)
+const pulse = s("pulse").scrub("<0>/32")
+
+
+const saxSolo = note("<[D3 [A#2 D3]] C3 [E#3 [D3 C3]] A#2>/4").s("sax_vib").delay(.5)
+const melody = note("eb2 ab1 c1 e1 e1 eb2 e1")
+  .struct("t(11,16)")
+  .det(16000)
+  .s("gm_synth_brass_1")
+  .dec(.18)
+  .lpf(saw.range(400, 900).slow(4))
+  .hpf(saw.range(340, 500).slow(4))
+const bg = note("<D D#>/4").s("tri").seg(16).lpf(1500)
+const solo = note("<G3 A#3>").s("tri").struct("[1 0 1 1 0]*3.2")
+  .dec(perlin.range(.2, 1))
+  .detune(perlin.range(-20, 20).slow(2))
+  .lpf(perlin.range(2000, 20000).slow(4))
+  .room(1).rlp(8000)
+
+
+const bass = n("<-3 [-2 0]>/4").seg(8).s("wt_digital_echoes")
+  .scale("<C2:major>").dec(.8).lpf(800)
+const groov = note("~ ~ g1 ~ ~ d1 ~ ~ d#1 ~ ~ ~ ~ ~ ~ ~").s("z_square")
+  .lpf(700).att(.06).room(.8)
+
+
+const bdRithm = s("mpc1000_bd").seg(4)
+const clap = s("mc303_cp").beat("4,12", 16).lpf(330).room(1.2)
+const sdRithm = s("tr808_hh!2").delay(2)
+const whiteRithm = s("woodblock").beat("4,1", 8).delay(1).pan(perlin)
+
+
+$: stack(
+
+  saxSolo.gain(slider(2.2))
+  .mask("<0 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0>/32"),
+  solo.gain(slider(1.15))
+  .mask("<0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 0 0>/8"),
+
+  drone.gain(slider(1.2))
+  .mask("<0 1 1 0 0 0 1 0 0 0 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0>/16"),
+  gmin.gain(slider(1.1))
+  .mask("<0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 [1 1 0 0] 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0>/16"),
+  pulse.gain(slider(1.1))
+  .mask("<1 0 1 0 0 0 0 0 0 0 1 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0>/16"),
+
+  bdRithm.gain(slider(1.2))
+  .mask("<0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1 0 0 0>/8"),
+  clap.gain(slider(2.2))
+  .mask("<0 0 0 0 0 0 1 1 1 0 1 0 1 0 1 0 1 0 1 0 1 1 0 1 1 1 1 1 1 0 0 0>/8"),
+  sdRithm.gain(slider(.1))
+  .mask("<0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 0 0 0 1 1 1 1 1 0 0 0>/8"),
+  whiteRithm.gain(slider(.2))
+  .mask("<0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 0 1 0 0 0 0 1 1 1 0 0 0 0>/8"),
+
+  melody.gain(slider(1.5))
+  .mask("<0 0 0 0 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 1 1 1 1 1 1 1 1 0 0 0>/8"),
+  bg.gain(slider(.75))
+  .mask("<0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0>/8"),
+  bass.gain(slider(1))
+  .mask("<0 0 1 1 1 1 1 1 1 0 0 0 0 0 0 0 1 1 1 1 1 0 0 1 1 1 1 1 0 0 0 0>/8"),
+  groov.gain(slider(1))
+  .mask("<0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 1 1 0 0 0 0 0 0 0 0 0>/8"),
+
+)
