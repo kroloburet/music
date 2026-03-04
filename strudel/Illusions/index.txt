@@ -52,14 +52,14 @@ $: stack(
 
   saxSolo.gain(slider(2.2))
   .mask("<0 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0>/32"),
-  solo.gain(slider(1.15))
+  solo.gain(slider(1.1))
   .mask("<0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 0 0>/8"),
 
-  drone.gain(slider(1.2))
+  drone.gain(slider(1.3))
   .mask("<0 1 1 0 0 0 1 0 0 0 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0>/16"),
-  gmin.gain(slider(1.1))
+  gmin.gain(slider(1.2))
   .mask("<0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 [1 1 0 0] 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0>/16"),
-  pulse.gain(slider(1.1))
+  pulse.gain(slider(1.2))
   .mask("<1 0 1 0 0 0 0 0 0 0 1 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0>/16"),
 
   bdRithm.gain(slider(1.2))
