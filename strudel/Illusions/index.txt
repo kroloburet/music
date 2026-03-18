@@ -10,74 +10,70 @@
 */
 
 samples({
-    drone: 'drone-cm7.wav',
     gmin: 'gmin.wav',
+    drone: 'drone-cm7.wav',
     pulse: 'pulse-of-parsec.wav',
 }, 'https://raw.githubusercontent.com/kroloburet/music/master/strudel/Illusions/samples/')
 
-const drone = s("drone").scrub("<0>/16")
-const gmin = s("gmin").scrub("<.68 .1>").hpf(400)
-const pulse = s("pulse").scrub("<0>/32")
+const gmin = s("gmin").scrub("<.68 .1>").hpf(620).delay(.5)
+const drone = s("drone").scrub("<0>/16").lpf(5000)
+const pulse = s("pulse").scrub("<0>/32").hpf(620)
 
 
-const saxSolo = note("<[D3 [A#2 D3]] C3 [E#3 [D3 C3]] A#2>/4").s("sax_vib").delay(.5)
-const melody = note("eb2 ab1 c1 e1 e1 eb2 e1")
-  .struct("t(11,16)")
-  .det(16000)
-  .s("gm_synth_brass_1")
-  .dec(.18)
-  .lpf(saw.range(400, 900).slow(4))
-  .hpf(saw.range(340, 500).slow(4))
-const bg = note("<D D#>/4").s("tri").seg(16).lpf(1500)
-const solo = note("<G3 A#3>").s("tri").struct("[1 0 1 1 0]*3.2")
-  .dec(perlin.range(.2, 1))
-  .detune(perlin.range(-20, 20).slow(2))
-  .lpf(perlin.range(2000, 20000).slow(4))
-  .room(1).rlp(8000)
-
-
-const bass = n("<-3 [-2 0]>/4").seg(8).s("wt_digital_echoes")
-  .scale("<C2:major>").dec(.8).lpf(800)
+const saxSolo = note("<[D3 [A#2 D3]] C3 [E#3 [D3 C3]] A#2>/4").s("sax_vib").hpf(1000).delay(.5)
+const synthSolo = note("<G3 A#3>").s("gm_epiano1").struct("[1 0 1 1 0]*3.2")
+  .sometimesBy(.55, x => x.add(note("[7 12 5]")))
+  .lpf(saw.range(350, 800).slow(4))
+  .room(1)
+const percussive = note("eb2 ab1 c1 e1 e1 eb2 e1").s("gm_synth_brass_1").struct("t(11,16)").dec(.15)
+  .lpf(saw.range(1200, 1700).slow(4))
+  .hpf(saw.range(400, 800).slow(4))
+  .delay(saw.range(0, 1))
+  .pan(.3)
+const bg = note("<D D#>/4").s("z_triangle").seg(16).att(.00004).hpf(perlin.range(200, 300)).pan(.7)
+const bass = n("<-3 [-2 0]>/4").s("supersaw").struct("t(11,16)")
+  .scale("<C2:major>").lpf(150).hpf(200)
 const groov = note("~ ~ g1 ~ ~ d1 ~ ~ d#1 ~ ~ ~ ~ ~ ~ ~").s("z_square")
-  .lpf(700).att(.06).room(.8)
+  .lpf(2700).att(.06).room(1)
 
 
-const bdRithm = s("mpc1000_bd").seg(4)
-const clap = s("mc303_cp").beat("4,12", 16).lpf(330).room(1.2)
-const sdRithm = s("tr808_hh!2").delay(2)
-const whiteRithm = s("woodblock").beat("4,1", 8).delay(1).pan(perlin)
+const bdRithm = s("mpc1000_bd").seg(4).lpf(80).pan(.4)
+const clap = s("mc303_cp").beat("4,12", 16)
+  .lpf(1800).room(1.5).roomfade(.2).sometimesBy(.1, x=>x.delay(1))
+const hhRithm = s("tr808_hh!2").delay(2)
+const woodblockRithm = s("woodblock").beat("4,1", 8).delay(1).pan(perlin)
 
 
 $: stack(
 
-  saxSolo.gain(slider(2.2))
-  .mask("<0 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0>/32"),
-  solo.gain(slider(1.1))
-  .mask("<0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 0 0>/8"),
+  saxSolo.gain(slider(6.5))
+  .mask("<0 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0>/32")._scope(),
+  synthSolo.gain(slider(.9))
+  .mask("<0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 [1 1 0 0 0 0 0 0] 0>/8")._scope(),
 
-  drone.gain(slider(1.3))
-  .mask("<0 1 1 0 0 0 1 0 0 0 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0>/16"),
-  gmin.gain(slider(1.2))
-  .mask("<0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 [1 1 0 0] 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0>/16"),
-  pulse.gain(slider(1.2))
-  .mask("<1 0 1 0 0 0 0 0 0 0 1 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0>/16"),
+  drone.gain(slider(1.7))
+  .mask("<0 1 1 0 0 0 1 0 0 0 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0>/16")._scope(),
+  gmin.gain(slider(1.6))
+  .mask("<0 0 0 1 1 1 1 1 1 1 1 [1 0] 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0>/16")._scope(),
+  pulse.gain(slider(1.5))
+  .mask("<1 0 1 0 0 0 0 0 0 0 1 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0>/16")._scope(),
 
-  bdRithm.gain(slider(1.1))
-  .mask("<0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1 0 0 0>/8"),
-  clap.gain(slider(2.2))
-  .mask("<0 0 0 0 0 0 1 1 1 0 1 0 1 0 1 0 1 0 1 0 1 1 0 1 1 1 1 1 1 0 0 0>/8"),
-  sdRithm.gain(slider(.1))
-  .mask("<0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 0 0 0 1 1 1 1 1 0 0 0>/8"),
-  whiteRithm.gain(slider(.2))
-  .mask("<0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 0 1 0 0 0 0 1 1 1 0 0 0 0>/8"),
+  bdRithm.gain(slider(.5))
+  .mask("<0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1 0 0 0>/8")._scope(),
+  clap.gain(slider(.45))
+  .mask("<0 0 0 0 0 0 1 1 1 0 1 0 1 0 1 0 1 0 1 0 1 1 0 1 1 1 1 1 1 0 0 0>/8")._scope(),
+  hhRithm.gain(slider(.13))
+  .mask("<0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 0 0 0 1 1 1 1 1 0 0 0>/8")._scope(),
+  woodblockRithm.gain(slider(.75))
+  .mask("<0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 0 1 0 0 0 0 1 1 0 0 0 0 0>/8")._scope(),
 
-  melody.gain(slider(1.5))
-  .mask("<0 0 0 0 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 1 1 1 1 1 1 1 1 0 0 0>/8"),
-  bg.gain(slider(.75))
-  .mask("<0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0>/8"),
-  bass.gain(slider(1))
-  .mask("<0 0 1 1 1 1 1 1 1 0 0 0 0 0 0 0 1 1 1 1 1 0 0 1 1 1 1 1 0 0 0 0>/8"),
-  groov.gain(slider(1))
-  .mask("<0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 1 1 0 0 0 0 0 0 0 0 0>/8"),
+  percussive.gain(slider(1.7))
+  .mask("<0 0 0 0 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 1 1 1 1 1 1 0 0 0 0 0>/8")._scope(),
+  bg.gain(slider(1.6))
+  .mask("<0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 0 1 1 [1 0] 0>/8")._scope(),
+  bass.gain(slider(4))
+  .mask("<0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 0 0>/8")._scope(),
+  groov.gain(slider(.67))
+  .mask("<0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 1 1 0 0 0 0 0 0 0 0 0>/8")._scope(),
 
 )
