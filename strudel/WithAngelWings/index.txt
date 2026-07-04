@@ -1,0 +1,77 @@
+/*
+@title With Angel Wings
+@by Kroloburet
+@details
+  Dedicated to the warriors protecting Ukraine,
+  and to the volunteers, medics, emergency workers,
+  and all the other superhumans.
+*/
+
+samples({
+    lyrics: 'lyrics.flac',
+    gmin: 'gmin.wav',
+}, 'https://raw.githubusercontent.com/kroloburet/music/master/strudel/WithAngelWings/samples/')
+
+const lyrics = s("<lyrics>/8").speed(.89)
+  .dist(2).hpf(1700).room(1.2).rfade(.5)
+const gmin = s("gmin").scrub("<.45@2 [.45 .45]@4 .45@2>")
+  .speed("<.9@2 [1.8 1]@4 1.88@2>").room(.3).delay(.6)
+
+const bg = s("<ocarina_vib>")
+const guitarBass = note("<C2 B#1>").s("gm_overdriven_guitar:4")
+  .struct("[1 0 1 1 0]*2").hpf(50).room(.2)
+const groov = s("supersaw").struct("[1 0 1 1 0]*2")
+  .att(.01).rel(.55).lpf(saw.range(200, 1400).slow(16))
+
+
+const bdRithm = s("yamahary30_bd:13").seg(2.5)
+const bdRithm1 = s("[bd:4(3,4), bd(3,5)], <~ lt(3,8) [ht(3,4) [mt [lt]]]>")
+  .bank("rolandtr626").seg(2.5).fast(4).room(.3)
+const clap = s("<clap:2, alesissr16_rim>").lpf(3000).room(1.5)
+const hhRithm = s("tr808_hh*5")
+
+const perc = note("<C3 D#3>/4").seg(15).s("z_sawtooth")
+  .dist(.2).lpf(saw.range(700, 100000).slow(16))
+const guitar = note("<C2@4 D#2@4>(2,3)").s("gm_overdriven_guitar:1")
+  .dist(.5).det(50).delay(.6)
+
+
+
+$: stack(
+
+  lyrics.gain(slider(0.75))
+  .mask("<1 1 0 0 0 1 1 0 0 1 0 1>/8"),
+
+  bg.gain(slider(0.7, 0, 2))
+  .mask("<1 0 0 0 0 0 0 0 0 1 0 0>/8"),
+
+  guitarBass.gain(slider(1.3))
+  .mask("<0 1 1 1 1 1 1 0 0 0 1 0>/8"),
+
+  bdRithm.gain(slider(0.8))
+  .mask("<0 0 1 1 1 1 0 0 0 1 0 0>/8"),
+
+  bdRithm1.gain(slider(.95))
+  .mask("<0 0 0 0 0 0 0 1 1 1 0 0>/8"),
+
+  clap.gain(slider(1.3, 0, 2))
+  .mask("<0 0 0 1 1 1 0 0 0 0 1 0>/8"),
+
+  groov.gain(slider(1.3, 0, 2))
+  .mask("<0 0 0 1 1 1 1 1 1 0 0 0>/8"),
+
+  hhRithm.gain(slider(0.65))
+  .mask("<0 1 0 0 1 0 1 1 1 1 1 0>/8"),
+
+  gmin.gain(slider(1.5))
+  .mask("<0 0 1 0 0 0 1 0 0 0 1 1>/8"),
+
+  perc.gain(slider(1, 0, 2))
+  .mask("<0 0 0 0 0 1 1 0 0 1 1 0>/8"),
+
+  guitar.gain(slider(.52))
+  .mask("<0 0 0 0 0 0 0 0 1 1 0 0>/8"),
+
+)
+//.compressor("-18:3:23:0.05:0.1").postgain(.65)
+._scope()
